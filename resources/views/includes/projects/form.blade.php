@@ -67,7 +67,22 @@
             </div>
         </div>
     </div>
-
+    <div class="col-9">
+        <h6 class="mt-5">Tecnologie</h6>
+        @foreach ($technologies as $technology)
+            <div class="form-check form-check-inline mt-3">
+                <label class="form-check-label" for="tech-{{ $technology->id }}">{{ $technology->label }}</label>
+                <input class="form-check-input   @error('technology') is-invalid @enderror" type="checkbox"
+                    id="tech-{{ $technology->id }}" @if (in_array($technology->id, old('technology', $project_technology_ids ?? []))) checked @endif
+                    value="{{ $technology->id }} "name="technology[]">
+            </div>
+        @endforeach
+        @error('technology')
+            <div class="text-danger">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
     <div class="col-12 d-flex justify-content-end mt-3">
         <button type="reset" class="btn btn-primary me-2">Reset</button>
         <button class="btn btn-success">Aggiungi</button>

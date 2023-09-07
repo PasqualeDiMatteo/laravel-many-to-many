@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +20,6 @@ class ProjectController extends Controller
     {
         //
         $projects = Project::paginate(5);
-
         return view('admin.projects.index', compact("projects"));
     }
 
@@ -31,7 +31,8 @@ class ProjectController extends Controller
         //
         $project = new Project();
         $types = Type::all();
-        return view("admin.projects.create", compact("project", "types"));
+        $technologies = Technology::all();
+        return view("admin.projects.create", compact("project", "types", "technologies"));
     }
 
     /**
@@ -46,6 +47,7 @@ class ProjectController extends Controller
             'url' => 'required|unique:projects|url:http,https',
             'image' => 'image|nullable',
             'description' => 'string|nullable',
+            "technology" => "nullable|exists:technologies,id"
         ], [
             "title.required" => "Il titolo è mancante",
             "title.unique" => "Il titolo esiste già",
@@ -53,7 +55,8 @@ class ProjectController extends Controller
             "url.unique" => "Il link esiste già",
             "url.url" => "Il link è sbagliato",
             "image.image" => "Il file non è un immagine",
-            "type_id.exists" => "Il tipo inserito non esiste"
+            "type_id.exists" => "Il tipo inserito non esiste",
+            "technology.exists" => "La tecnologia selezionata non è valida"
         ]);
         $new_project = new Project();
 
@@ -66,6 +69,9 @@ class ProjectController extends Controller
         $new_project->type_id = $request->type_id;
         $new_project->description = $request->description;
         $new_project->save();
+
+        if ($request->technology) $new_project->technologies()->attach($request->technology);
+
         return to_route("admin.projects.index")->with('type', 'create')->with('message', 'Progetto creato con successo')->with('alert', 'success');
     }
 
@@ -85,7 +91,9 @@ class ProjectController extends Controller
     {
         //
         $types = Type::all();
-        return view("admin.projects.edit", compact("project", "types"));
+        $technologies = Technology::all();
+        $project_technology_ids = $project->technologies->pluck("id")->toArray();
+        return view("admin.projects.edit", compact("project", "types", "technologies", "project_technology_ids"));
     }
 
     /**
@@ -100,6 +108,7 @@ class ProjectController extends Controller
             'image' => 'image|nullable',
             'description' => 'string|nullable',
             "type_id" => "nullable|exists:types,id",
+            "technology" => "nullable|exists:technologies,id"
         ], [
             "title.required" => "Il titolo è mancante",
             "title.unique" => "Il titolo esiste già",
@@ -107,7 +116,8 @@ class ProjectController extends Controller
             "url.unique" => "Il link esiste già",
             "url.url" => "Il link è sbagliato",
             "image.image" => "Il file non è un immagine",
-            "type_id.exists" => "Il tipo inserito non esiste"
+            "type_id.exists" => "Il tipo inserito non esiste",
+            "technology.exists" => "La tecnologia selezionata non è valida"
         ]);
 
         if (Arr::exists($request, "image")) {
@@ -121,6 +131,8 @@ class ProjectController extends Controller
         $project->url = $request->url;
         $project->description = $request->description;
         $project->save();
+        if (!$request->technology && count($project->technologies)) $project->technologies()->detach();
+        elseif ($request->technology) $project->technologies()->sync($request->technology);
         return to_route('admin.projects.index')->with('type', 'update')->with('message', 'Progetto modificato con successo')->with('alert', 'success');
     }
 
@@ -154,6 +166,7 @@ class ProjectController extends Controller
     {
         $project = Project::onlyTrashed()->findOrFail($id);
         if ($project->image) Storage::delete($project->image);
+        if (count($project->technologies)) $project->technologies()->detach();
         $project->forceDelete();
         return to_route('admin.projects.trash')->with('type', 'delete')->with('alert', 'success')->with('message', 'Il progetto è stato eliminato definitivamente!');
     }
