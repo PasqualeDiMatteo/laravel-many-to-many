@@ -49,7 +49,7 @@ class TypeController extends Controller
         $new_type->label = $request->label;
         $new_type->color = $request->color;
         $new_type->save();
-        return to_route("admin.types.index");
+        return to_route("admin.types.index")->with('type', 'create')->with('message', 'Tipo creato con successo')->with('alert', 'success');;
     }
 
     /**
@@ -89,7 +89,7 @@ class TypeController extends Controller
         $type->label = $request->label;
         $type->color = $request->color;
         $type->save();
-        return to_route('admin.types.index');
+        return to_route('admin.types.index')->with('type', 'update')->with('message', 'Tipo modificato con successo')->with('alert', 'success');;
     }
 
     /**
@@ -99,7 +99,7 @@ class TypeController extends Controller
     {
         //
         $type->delete();
-        return to_route("admin.types.index");
+        return to_route("admin.types.index")->with('type', 'delete')->with('message', 'Tipo cancellato con successo')->with('alert', 'success');
     }
 
     // Trash
@@ -115,7 +115,7 @@ class TypeController extends Controller
     {
         $type = Type::onlyTrashed()->findOrFail($id);
         $type->restore();
-        return to_route('admin.types.trash');
+        return to_route('admin.types.trash')->with('type', 'update')->with('alert', 'success')->with('message', 'Il tipo è stato ripristinato!');
     }
 
     // Drop
@@ -124,13 +124,13 @@ class TypeController extends Controller
         $type = Type::onlyTrashed()->findOrFail($id);
 
         $type->forceDelete();
-        return to_route('admin.types.trash');
+        return to_route('admin.types.trash')->with('type', 'delete')->with('alert', 'success')->with('message', 'Il tipo è stato eliminato definitivamente!');
     }
 
     // Drop All
     public function dropAll()
     {
         Type::onlyTrashed()->forceDelete();
-        return to_route('admin.types.trash');
+        return to_route('admin.types.trash')->with('type', 'delete')->with('alert', 'success')->with('message', 'Il tuo cestino è stato svuotato correttamente!');
     }
 }
