@@ -16,6 +16,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Titolo</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Tecnologie</th>
                     <th scope="col">Link</th>
                     <th scope="col">Data Creazione</th>
                     <th scope="col">Data Ultima Modifica</th>
@@ -29,6 +30,13 @@
                         <td class="align-middle">{{ $project->title }}</td>
                         <td class="align-middle"><span
                                 class="badge"style="background:{{ $project->type->color }}">{{ $project->type->label }}</span>
+                        </td>
+                        <td class="align-middle">
+                            @forelse ($project->technologies as $technology)
+                                <span class="badge rounded-pill bg-{{ $technology->color }}">{{ $technology->label }}</span>
+                            @empty
+                            @endforelse
+
                         </td>
                         <td class="align-middle"><a href="{{ $project->url }}">Apri in GitHub</a></td>
                         <td class="align-middle">{{ $project->created_at }}</td>
@@ -48,7 +56,7 @@
                         </td>
                     </tr>
                 @empty
-                    <td colspan="7">
+                    <td colspan="8">
                         <h3>Non ci sono progetti</h3>
                     </td>
                 @endforelse
