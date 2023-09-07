@@ -35,8 +35,8 @@
                             @forelse ($project->technologies as $technology)
                                 <span class="badge rounded-pill bg-{{ $technology->color }}">{{ $technology->label }}</span>
                             @empty
+                                -
                             @endforelse
-
                         </td>
                         <td class="align-middle"><a href="{{ $project->url }}">Apri in GitHub</a></td>
                         <td class="align-middle">{{ $project->created_at }}</td>
