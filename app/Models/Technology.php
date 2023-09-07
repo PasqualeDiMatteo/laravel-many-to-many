@@ -10,4 +10,10 @@ class Technology extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+    public function projects()
+
+    {
+        return  $this->belongsToMany(Project::class);
+    }
 }
