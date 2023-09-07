@@ -3,6 +3,7 @@
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\TechnologyController;
 use App\Http\Controllers\Admin\TypeController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,24 @@ Route::prefix("/admin")->middleware(["auth"])->name("admin.")->group(function ()
 
     // Resource
     Route::resource("types", TypeController::class);
+
+
+    // Technologies
+
+    // Trash
+    Route::get("/technologies/trash", [TechnologyController::class, "trash"])->name("technologies.trash");
+
+    // Restore
+    Route::patch("/technologies/{technology}/restore", [TechnologyController::class, "restore"])->name("technologies.restore");
+
+    // Drop All
+    Route::delete("/technologies/drop-all", [TechnologyController::class, "dropAll"])->name("technologies.dropAll");
+
+    // Drop
+    Route::delete("/technologies/{technology}/drop", [TechnologyController::class, "drop"])->name("technologies.drop");
+
+    // Resource
+    Route::resource("technologies", TechnologyController::class);
 });
 
 

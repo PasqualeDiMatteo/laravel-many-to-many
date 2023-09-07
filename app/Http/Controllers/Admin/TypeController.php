@@ -49,7 +49,7 @@ class TypeController extends Controller
         $new_type->label = $request->label;
         $new_type->color = $request->color;
         $new_type->save();
-        return to_route("admin.types.index")->with('type', 'create')->with('message', 'Tipo creato con successo')->with('alert', 'success');;
+        return to_route("admin.types.index")->with('type', 'create')->with('message', 'Tipo creato con successo')->with('alert', 'success');
     }
 
     /**
@@ -89,7 +89,7 @@ class TypeController extends Controller
         $type->label = $request->label;
         $type->color = $request->color;
         $type->save();
-        return to_route('admin.types.index')->with('type', 'update')->with('message', 'Tipo modificato con successo')->with('alert', 'success');;
+        return to_route('admin.types.index')->with('type', 'update')->with('message', 'Tipo modificato con successo')->with('alert', 'success');
     }
 
     /**

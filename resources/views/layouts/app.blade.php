@@ -71,6 +71,12 @@
                                     href="{{ route('admin.types.index') }}">Types</a>
                             </li>
                         @endauth
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link @if (Route::is('admin.technologies*')) active @endif"
+                                    href="{{ route('admin.technologies.index') }}">Tecnologie</a>
+                            </li>
+                        @endauth
                     </ul>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
